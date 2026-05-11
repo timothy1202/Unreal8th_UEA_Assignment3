@@ -12,6 +12,7 @@
 #include "InputActionValue.h"
 #include "Engine/DamageEvents.h"
 #include "FireDamageType.h"
+#include "MyActorComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -54,34 +55,37 @@ AUEACharacter::AUEACharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+	
+	HealthComponent = CreateDefaultSubobject<UMyActorComponent>(TEXT("HealthComponent"));
+
 }
 
-float AUEACharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
-	class AController* EventInstigator, AActor* DamageCauser)
-{
-	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	
-	const UFireDamageType* FireDamage = DamageEvent.DamageTypeClass->GetDefaultObject<UFireDamageType>();
-	
-	if (FireDamage)
-	{
-		//낙사,트랩...
-		//UE_LOG(LogTemp, Warning, TEXT("Damage caused by world!"));
-		
-		//화상
-		ActualDamage *= (1.f + FireDamage->ArmorPenetration);
-		//화상 효과!! 이펙,사운드!!
-	}
-	
-	//HP -= ActualDamage;
-	
-	// if (EventInstigator)
-	// {
-	// 	UE_LOG(LogTemp,Warning, TEXT("Im Enemy"));
-	// }
-	
-	return ActualDamage;
-}
+// float AUEACharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
+// 	class AController* EventInstigator, AActor* DamageCauser)
+// {
+// 	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+// 	
+// 	const UFireDamageType* FireDamage = DamageEvent.DamageTypeClass->GetDefaultObject<UFireDamageType>();
+// 	
+// 	if (FireDamage)
+// 	{
+// 		//낙사,트랩...
+// 		//UE_LOG(LogTemp, Warning, TEXT("Damage caused by world!"));
+// 		
+// 		//화상
+// 		ActualDamage *= (1.f + FireDamage->ArmorPenetration);
+// 		//화상 효과!! 이펙,사운드!!
+// 	}
+// 	
+// 	//HP -= ActualDamage;
+// 	
+// 	// if (EventInstigator)
+// 	// {
+// 	// 	UE_LOG(LogTemp,Warning, TEXT("Im Enemy"));
+// 	// }
+// 	
+// 	return ActualDamage;
+// }
 
 //////////////////////////////////////////////////////////////////////////
 // Input
@@ -155,4 +159,22 @@ void AUEACharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void AUEACharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	
+
+	if (HealthComponent)
+	{
+		HealthComponent->OnHealthDead.AddDynamic(this, &AUEACharacter::HandleActorDead);
+	}
+	
+}
+
+//시그니처 잘 맞춰주셔야겠죠??
+void AUEACharacter::HandleActorDead(AController* InstigatorController)
+{
+	UE_LOG(LogTemp, Warning, TEXT("TestMyActor가 사망했습니다!"));
 }

@@ -19,7 +19,9 @@ class UTestMyInterface : public UInterface
 class UEA_API ITestMyInterface
 {
 	GENERATED_BODY()
-
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
+	//BlueprintNativeEvent -> 블루프린트가 있다면 C++은 무시
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
+	void OnFireDetected(float Temperature, FVector HitLocation);
+
 };

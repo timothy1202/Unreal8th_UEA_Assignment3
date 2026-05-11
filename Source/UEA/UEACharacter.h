@@ -46,9 +46,13 @@ class AUEACharacter : public ACharacter
 
 public:
 	AUEACharacter();
-	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	//virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<class UMyActorComponent> HealthComponent;
 
+	virtual void BeginPlay() override;
+	void HandleActorDead(AController* InstigatorController);
 protected:
 
 	/** Called for movement input */
