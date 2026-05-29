@@ -11,6 +11,17 @@ UQuestComponent::UQuestComponent()
 	bQuestComplete = false;
 }
 
+void UQuestComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// 게임 시작 시 초기 퀘스트 상태를 UI에 전달
+	GetWorld()->GetTimerManager().SetTimerForNextTick([this]()
+	{
+		OnQuestProgressChanged.Broadcast(CurrentKills, KillGoal);
+	});
+}
+
 void UQuestComponent::AddMonsterKill()
 {
 	if (bQuestComplete) return;

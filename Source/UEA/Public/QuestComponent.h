@@ -38,6 +38,7 @@ public:
 	FQuestCompleteSignature OnQuestComplete;
 
 protected:
+	virtual void BeginPlay() override;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest")
 	int32 KillGoal;
 

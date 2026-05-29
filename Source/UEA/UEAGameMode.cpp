@@ -2,6 +2,7 @@
 
 #include "UEAGameMode.h"
 #include "UEACharacter.h"
+#include "UEA_HUD.h"
 #include "QuestComponent.h"
 #include "UObject/ConstructorHelpers.h"
 #include "GameFramework/PlayerController.h"
@@ -13,16 +14,15 @@ AUEAGameMode::AUEAGameMode()
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
+
+	// HUD 클래스를 C++에서 직접 지정 (블루프린트 편집 없이 동작)
+	HUDClass = AUEA_HUD::StaticClass();
 }
 
 void AUEAGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
-
-	if (AUEACharacter* Character = Cast<AUEACharacter>(NewPlayer->GetPawn()))
-	{
-		RegisterPartyMember(Character);
-	}
+	// 파티 등록은 캐릭터 BeginPlay에서 처리 (폰 스폰 타이밍 보장)
 }
 
 void AUEAGameMode::Logout(AController* Exiting)

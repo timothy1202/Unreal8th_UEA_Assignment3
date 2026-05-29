@@ -13,9 +13,13 @@ void UMyActorComponent::BeginPlay()
 	Super::BeginPlay();
 
 	_CurrentHealth = _MaxHealth;
-	//신호 받기!!
 	GetOwner()->OnTakeAnyDamage.AddDynamic(this, &UMyActorComponent::DamageTake);
-	
+
+	// 게임 시작 시 초기 HP를 UI에 전달 (1프레임 뒤에 방송해야 위젯이 준비됨)
+	GetWorld()->GetTimerManager().SetTimerForNextTick([this]()
+	{
+		OnHealthDamaged.Broadcast(_CurrentHealth, _MaxHealth, 0.f);
+	});
 }
 
 void UMyActorComponent::DamageTake(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* Instigator, AActor* Causer)
