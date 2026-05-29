@@ -36,6 +36,5 @@ void UMyActorComponent::DamageTake(AActor* DamagedActor, float Damage, const UDa
 void UMyActorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::Green, FString::Printf(TEXT("HP : %f"), _CurrentHealth));
+	// OnHealthDamaged 델리게이트로 UI를 업데이트하므로 매 프레임 출력 불필요
 }
